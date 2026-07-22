@@ -1,2 +1,3 @@
 com\bigballoon\Application.class
 com\bigballoon\controller\WorkspaceController.class
+com\bigballoon\CorsFilter.class
