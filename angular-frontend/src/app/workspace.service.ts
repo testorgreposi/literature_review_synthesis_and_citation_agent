@@ -531,7 +531,7 @@ export class WorkspaceService {
     ]);
   }
 
-  sendChatbotMessage(text: string, activePdfId: string | null) {
+  async sendChatbotMessage(text: string, activePdfId: string | null) {
     const userMsg: ChatMessage = {
       id: `msg-${Date.now()}`,
       sender: 'user',
@@ -540,14 +540,26 @@ export class WorkspaceService {
     };
     this.chatbotMessages.update(prev => [...prev, userMsg]);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch(`${this.API_URL}/ai/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: text })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        this.chatbotMessages.update(prev => [...prev, data]);
+      } else {
+        throw new Error('Server error');
+      }
+    } catch (err) {
       const botMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: 'bot',
-        text: `🤖 [Local Query Response] "${text}" matches active sections outline. Citation references compiled.`,
+        text: `🤖 [RESEARCH FLOW AI] Fallback: "${text}" received. Configure GEMINI_API_KEY environment variable to use real Gemini AI!`,
         timestamp: new Date().toLocaleTimeString()
       };
       this.chatbotMessages.update(prev => [...prev, botMsg]);
-    }, 500);
+    }
   }
 }

@@ -193,6 +193,71 @@ public class WorkspaceController {
         return databaseJson;
     }
 
+    @PostMapping("/api/ai/chat")
+    public Map<String, Object> aiChat(@RequestBody Map<String, String> request) {
+        String prompt = request.getOrDefault("prompt", "");
+        
+        String responseText = callGeminiApi(prompt);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", "msg-bot-" + System.currentTimeMillis());
+        response.put("sender", "bot");
+        response.put("text", responseText);
+        response.put("timestamp", new SimpleDateFormat("hh:mm a").format(new Date()));
+        return response;
+    }
+
+    private String callGeminiApi(String prompt) {
+        String apiKey = System.getenv("GEMINI_API_KEY");
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            return "🤖 [RESEARCH FLOW AI] Fallback: \"" + prompt + "\" received. Set GEMINI_API_KEY environment variable to use real Gemini AI!";
+        }
+        
+        try {
+            String urlString = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+            java.net.URL url = new java.net.URL(urlString);
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+            
+            String escapedPrompt = prompt.replace("\\", "\\\\").replace("\"", "\\\"");
+            String jsonInputString = "{\"contents\": [{\"parts\":[{\"text\":\"" + escapedPrompt + "\"}]}]}";
+            
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonInputString.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+            
+            int code = conn.getResponseCode();
+            if (code == 200) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine = null;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    
+                    String respStr = response.toString();
+                    int textIndex = respStr.indexOf("\"text\": \"");
+                    if (textIndex != -1) {
+                        int start = textIndex + 9;
+                        int end = respStr.indexOf("\"", start);
+                        if (end != -1) {
+                            String reply = respStr.substring(start, end);
+                            return reply.replace("\\n", "\n").replace("\\\"", "\"");
+                        }
+                    }
+                    return "AI responded successfully, but response format could not be parsed: " + respStr;
+                }
+            } else {
+                return "Gemini API error code: " + code;
+            }
+        } catch (Exception e) {
+            return "Failed to connect to Gemini API: " + e.getMessage();
+        }
+    }
+
     private void loadDatabase() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
