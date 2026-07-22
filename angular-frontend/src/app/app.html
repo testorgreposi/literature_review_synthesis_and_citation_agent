@@ -72,6 +72,22 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
         <span>Citations</span>
       </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'outlines'" (click)="setTab('outlines')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <span>Outlines</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'extracts'" (click)="setTab('extracts')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+        <span>Extracts</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'notes'" (click)="setTab('notes')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        <span>Notes</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'templates'" (click)="setTab('templates')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+        <span>Templates</span>
+      </button>
       <button class="sidebar-nav-btn" [class.active]="currentTab === 'settings'" (click)="setTab('settings')">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>Settings</span>
@@ -367,38 +383,65 @@
       </div>
 
       <!-- TAB 7: SETTINGS -->
-      <div *ngIf="currentTab === 'settings'" class="library-workspace-layout" style="max-width: 720px;">
-        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Project Settings</h2>
-        <div class="form-card-body">
-          <div class="form-group">
-            <label>Project Name</label>
-            <input type="text" class="input-field" style="width: 100%" [(ngModel)]="projName" />
-          </div>
-          <div class="form-group">
-            <label>Description</label>
-            <textarea class="input-field" style="width: 100%; min-height: 80px" [(ngModel)]="projDesc"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Default Citation Style</label>
-            <select class="project-selector-select" style="width: 100%">
-              <option value="APA">APA 7th</option>
-              <option value="MLA">MLA 9th</option>
-              <option value="Chicago">Chicago Author-Date</option>
-              <option value="Harvard">Harvard Style</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>AI Model Scaffolding</label>
-            <select class="project-selector-select" style="width: 100%">
-              <option value="GPT-4o">GPT-4o (Default)</option>
-              <option value="Claude-3.5">Claude 3.5 Sonnet</option>
-              <option value="Gemini-Pro">Gemini 1.5 Pro</option>
-            </select>
-          </div>
+      <div *ngIf="currentTab === 'settings'" class="library-workspace-layout" style="display: flex; gap: 32px;">
+        <!-- Settings Left Sidebar -->
+        <aside style="width: 200px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
+          <button class="sidebar-nav-btn active" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px;">General</button>
+          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">Collaborators</button>
+          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">AI Preferences</button>
+          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">Export Settings</button>
+          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">Citation Style</button>
+          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--danger);">Delete Project</button>
+        </aside>
 
-          <button class="btn btn-primary" style="align-self: flex-start" (click)="saveSettings()">
-            Save Changes
-          </button>
+        <!-- Settings Form Area -->
+        <div style="flex: 1; max-width: 600px;">
+          <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Project Settings</h2>
+          <div class="form-card-body">
+            <div class="form-group">
+              <label>Project Name</label>
+              <input type="text" class="input-field" style="width: 100%" [(ngModel)]="projName" />
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea class="input-field" style="width: 100%; min-height: 80px" [(ngModel)]="projDesc"></textarea>
+            </div>
+            <div style="display: flex; gap: 16px;">
+              <div class="form-group" style="flex: 1;">
+                <label>Default Citation Style</label>
+                <select class="project-selector-select" style="width: 100%">
+                  <option value="APA">APA 7th</option>
+                  <option value="MLA">MLA 9th</option>
+                  <option value="Chicago">Chicago Author-Date</option>
+                  <option value="Harvard">Harvard Style</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label>Language</label>
+                <select class="project-selector-select" style="width: 100%">
+                  <option>English</option>
+                  <option>Spanish</option>
+                  <option>German</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>AI Model Scaffolding</label>
+              <select class="project-selector-select" style="width: 100%">
+                <option value="GPT-4o">GPT-4o (Default)</option>
+                <option value="Claude-3.5">Claude 3.5 Sonnet</option>
+                <option value="Gemini-Pro">Gemini 1.5 Pro</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+              <input type="checkbox" id="citeCheck" checked style="width: 16px; height: 16px;" />
+              <label for="citeCheck" style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">Include document citations in AI responses</label>
+            </div>
+
+            <button class="btn btn-primary" style="align-self: flex-start" (click)="saveSettings()">
+              Save Changes
+            </button>
+          </div>
         </div>
       </div>
 
@@ -418,10 +461,92 @@
             <label>Affiliation / Institution</label>
             <input type="text" class="input-field" style="width: 100%" [(ngModel)]="profAffil" />
           </div>
+          <div class="form-group">
+            <label>Bio</label>
+            <textarea class="input-field" style="width: 100%; min-height: 80px;" placeholder="Describe your study field..."></textarea>
+          </div>
           
           <button class="btn btn-primary" style="align-self: flex-start" (click)="saveProfile()">
             Save Profile
           </button>
+        </div>
+      </div>
+
+      <!-- TAB 9: OUTLINES -->
+      <div *ngIf="currentTab === 'outlines'" class="library-workspace-layout" style="max-width: 800px;">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Document Structure Outlines</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">Generated outline headings and conceptual hierarchy for literature drafting.</p>
+        <div class="form-card-body" style="gap: 16px;">
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">
+            <span style="font-weight: 700; color: var(--accent-primary);">1.</span>
+            <span style="font-size: 13.5px; font-weight: 600;">Introduction & Historical Context of Medical Imaging</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; margin-left: 20px;">
+            <span style="font-weight: 700; color: var(--accent-primary);">1.1.</span>
+            <span style="font-size: 13px;">Evolution of X-Ray, MRI, and CT Scan Technologies</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">
+            <span style="font-weight: 700; color: var(--accent-primary);">2.</span>
+            <span style="font-size: 13.5px; font-weight: 600;">Deep Learning Architectures for Analysis</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; margin-left: 20px;">
+            <span style="font-weight: 700; color: var(--accent-primary);">2.1.</span>
+            <span style="font-size: 13px;">Convolutional Neural Networks (CNNs) & Residual Frameworks</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; margin-left: 20px;">
+            <span style="font-weight: 700; color: var(--accent-primary);">2.2.</span>
+            <span style="font-size: 13px;">Encoder-Decoder Architectures (U-Net) & Segmentation</span>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: var(--bg-tertiary); border-radius: 8px;">
+            <span style="font-weight: 700; color: var(--accent-primary);">3.</span>
+            <span style="font-size: 13.5px; font-weight: 600;">Transformers and Spatial Attention Mechanisms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 10: EXTRACTS -->
+      <div *ngIf="currentTab === 'extracts'" class="library-workspace-layout">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Key Data Extracts</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">Extracted figures, tables, and important passages from library sources.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="library-card-premium" style="gap: 8px;">
+            <span class="badge" style="background-color: #fef3c7; color: #d97706; border: none;">Quote Extract</span>
+            <p style="font-size: 13.5px; font-style: italic; line-height: 1.5; margin: 4px 0 0;">"Deeper neural networks are more difficult to train. We present a residual learning framework to ease the training of networks that are substantially deeper than those previously used."</p>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: auto; padding-top: 8px;">Source: He et al. (2016)</span>
+          </div>
+          <div class="library-card-premium" style="gap: 8px;">
+            <span class="badge" style="background-color: #e0f2fe; color: #0369a1; border: none;">Data Point</span>
+            <p style="font-size: 13.5px; font-style: italic; line-height: 1.5; margin: 4px 0 0;">"Localized memory partitions yield hit rate improvements of up to 18% under mixed database operations."</p>
+            <span style="font-size: 11px; color: var(--text-muted); margin-top: auto; padding-top: 8px;">Source: Vaswani et al. (2017)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 11: NOTES -->
+      <div *ngIf="currentTab === 'notes'" class="library-workspace-layout" style="max-width: 800px;">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Workspace Notes Pad</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">Compile freeform ideas, scratchpad drafts, and observations.</p>
+        <div class="form-card-body">
+          <textarea class="input-field" style="min-height: 350px; font-size: 14px; line-height: 1.6; font-family: monospace;" placeholder="Write your literature observations or research checklist here..."></textarea>
+          <button class="btn btn-primary" style="align-self: flex-start;">Save Notes</button>
+        </div>
+      </div>
+
+      <!-- TAB 12: TEMPLATES -->
+      <div *ngIf="currentTab === 'templates'" class="library-workspace-layout">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Synthesis Outlines Templates</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">Ready-to-use structural blueprints for literature review and synthesis drafting.</p>
+        <div class="library-cards-grid">
+          <div class="library-card-premium">
+            <h3 style="font-size: 15px; margin: 0;">APA Literature Review Template</h3>
+            <p style="font-size: 12.5px; color: var(--text-secondary); margin: 0;">Standard structure covering intro, thematic headings, and APA formatted citations guidelines.</p>
+            <button class="btn btn-secondary" style="margin-top: auto; font-size: 11px;">Use Template</button>
+          </div>
+          <div class="library-card-premium">
+            <h3 style="font-size: 15px; margin: 0;">IEEE Systematic Review Template</h3>
+            <p style="font-size: 12.5px; color: var(--text-secondary); margin: 0;">Technological framework covering comparative methodology matrix and quantitative data analysis synthesis.</p>
+            <button class="btn btn-secondary" style="margin-top: auto; font-size: 11px;">Use Template</button>
+          </div>
         </div>
       </div>
 

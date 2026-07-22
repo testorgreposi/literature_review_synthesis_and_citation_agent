@@ -75,7 +75,7 @@ export class App {
   get chatbotMessages() { return this.workspaceService.chatbotMessages(); }
   get citationStyle() { return this.workspaceService.citationStyle(); }
 
-  setTab(tab: 'dashboard' | 'projects' | 'documents' | 'synthesis' | 'chatbot' | 'citations' | 'settings' | 'profile') {
+  setTab(tab: 'dashboard' | 'projects' | 'documents' | 'synthesis' | 'chatbot' | 'citations' | 'outlines' | 'extracts' | 'notes' | 'templates' | 'settings' | 'profile') {
     this.workspaceService.currentTab.set(tab);
   }
 

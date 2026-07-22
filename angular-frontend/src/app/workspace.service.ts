@@ -11,7 +11,7 @@ export class WorkspaceService {
   readonly user = signal<AuthUser | null>(null);
   readonly projects = signal<ResearchProject[]>([]);
   readonly activeProjectId = signal<string>('proj-1');
-  readonly currentTab = signal<'dashboard' | 'projects' | 'documents' | 'synthesis' | 'chatbot' | 'citations' | 'settings' | 'profile'>('dashboard');
+  readonly currentTab = signal<'dashboard' | 'projects' | 'documents' | 'synthesis' | 'chatbot' | 'citations' | 'outlines' | 'extracts' | 'notes' | 'templates' | 'settings' | 'profile'>('dashboard');
   readonly citationStyle = signal<CitationStyle>('APA');
   readonly themeMode = signal<'light' | 'dark'>('light');
   readonly activePaperId = signal<string | null>(null);
