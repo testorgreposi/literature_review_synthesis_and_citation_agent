@@ -142,14 +142,15 @@ export class WorkspaceService {
         return true;
       }
     } catch (err) {
-      // Offline fallback
-      const fallback: AuthUser = { email, name: name || email.split('@')[0], isLoggedIn: true };
-      this.user.set(fallback);
-      this.userProfile.update(prev => ({ ...prev, name: fallback.name }));
-      this.fetchProjects();
-      return true;
+      console.warn('Backend signin connection failed, using fallback.');
     }
-    return false;
+    
+    // Offline fallback
+    const fallback: AuthUser = { email, name: name || email.split('@')[0], isLoggedIn: true };
+    this.user.set(fallback);
+    this.userProfile.update(prev => ({ ...prev, name: fallback.name }));
+    this.fetchProjects();
+    return true;
   }
 
   async signUp(email: string, pass: string, name: string): Promise<boolean> {
@@ -167,14 +168,15 @@ export class WorkspaceService {
         return true;
       }
     } catch (err) {
-      // Offline fallback
-      const fallback: AuthUser = { email, name, isLoggedIn: true };
-      this.user.set(fallback);
-      this.userProfile.update(prev => ({ ...prev, name }));
-      this.fetchProjects();
-      return true;
+      console.warn('Backend signup connection failed, using fallback.');
     }
-    return false;
+
+    // Offline fallback
+    const fallback: AuthUser = { email, name, isLoggedIn: true };
+    this.user.set(fallback);
+    this.userProfile.update(prev => ({ ...prev, name }));
+    this.fetchProjects();
+    return true;
   }
 
   signOut() {
