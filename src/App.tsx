@@ -85,9 +85,9 @@ const AppShell: React.FC = () => {
       {/* 1. INDIGO SIDEBAR NAVIGATION (Matches Image) */}
       <aside className="sidebar-litreview">
         <div className="sidebar-brand">
-          <div className="sidebar-brand-icon">L</div>
+          <div className="sidebar-brand-icon">R</div>
           <div className="sidebar-brand-title">
-            LitReview AI
+            RESEARCH FLOW AI
             <span>Research Assistant</span>
           </div>
         </div>

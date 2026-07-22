@@ -1,0 +1,501 @@
+<!-- AUTH VIEW IF NOT LOGGED IN -->
+<div *ngIf="!user" class="modal-overlay" style="background-color: var(--bg-primary); display: flex; align-items: center; justify-content: center; height: 100vh;">
+  <div class="modal-content" style="max-width: 400px; padding: 40px; border-radius: 12px; background: white; box-shadow: var(--shadow-lg);">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #6366f1, #3b82f6); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; margin-bottom: 12px;">R</div>
+      <h2 style="font-size: 20px; font-weight: 800; margin: 0; color: var(--text-primary);">RESEARCH FLOW AI</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Sign in to your research workspace</p>
+    </div>
+
+    <form (submit)="handleAuthSubmit($event)" style="display: flex; flex-direction: column; gap: 16px;">
+      <div *ngIf="isSignUpMode()" class="form-group">
+        <label>Full Name</label>
+        <input type="text" class="input-field" [(ngModel)]="authName" name="name" placeholder="John Doe" required />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" class="input-field" [(ngModel)]="authEmail" name="email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="input-field" [(ngModel)]="authPassword" name="password" placeholder="••••••••" required />
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="padding: 12px; font-size: 14px; margin-top: 10px;">
+        {{ isSignUpMode() ? 'Create Account' : 'Sign In' }}
+      </button>
+
+      <div style="text-align: center; margin-top: 16px;">
+        <a href="javascript:void(0)" (click)="isSignUpMode.set(!isSignUpMode())" style="font-size: 12.5px; color: var(--accent-primary); text-decoration: none; font-weight: 600;">
+          {{ isSignUpMode() ? 'Already have an account? Sign in' : "Don't have an account? Sign up" }}
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MAIN APPLICATION SHELL -->
+<div *ngIf="user" class="app-container">
+
+  <!-- 1. DEEP NAVY SIDEBAR -->
+  <aside class="sidebar-litreview">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">R</div>
+      <div class="sidebar-brand-title">
+        RESEARCH FLOW AI
+        <span>Research Assistant</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav-list">
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'dashboard'" (click)="setTab('dashboard')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'projects'" (click)="setTab('projects')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
+        <span>Projects</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'documents'" (click)="setTab('documents')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+        <span>Documents</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'synthesis'" (click)="setTab('synthesis')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/></svg>
+        <span>Synthesis</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'chatbot'" (click)="setTab('chatbot')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>AI Chat</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'citations'" (click)="setTab('citations')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+        <span>Citations</span>
+      </button>
+      <button class="sidebar-nav-btn" [class.active]="currentTab === 'settings'" (click)="setTab('settings')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Sidebar Storage Panel -->
+    <div class="sidebar-storage-card">
+      <div style="display: flex; justify-content: space-between">
+        <span>Storage Used</span>
+        <span>2.4 GB / 10 GB</span>
+      </div>
+      <div class="sidebar-storage-bar">
+        <div class="sidebar-storage-fill"></div>
+      </div>
+    </div>
+
+    <!-- User Card -->
+    <div class="sidebar-user-card" style="cursor: pointer" (click)="setTab('profile')">
+      <div class="sidebar-user-avatar">N</div>
+      <div style="flex: 1; overflow: hidden">
+        <span style="font-size: 12px; font-weight: 700; display: block; color: white">{{ profName() }}</span>
+        <span style="font-size: 10px; color: #64748b; display: block">Researcher</span>
+      </div>
+      <button class="btn btn-icon-only" style="padding: 2px; color: #64748b" (click)="workspaceService.signOut(); $event.stopPropagation()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONSOLE LAYOUT -->
+  <div class="console-layout" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+    
+    <!-- Top Header Bar -->
+    <header class="header-litreview">
+      <div class="header-project-info">
+        <span class="header-project-title">{{ workspaceService.activeProject().name }}</span>
+        <span class="badge badge-accent">Active Project</span>
+      </div>
+
+      <div style="display: flex; alignItems: center; gap: 20px">
+        <div class="header-search-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="header-search-input" placeholder="Search anything..." [(ngModel)]="searchQuery" />
+        </div>
+
+        <button class="btn btn-icon-only" (click)="toggleTheme()" title="Toggle Light/Dark Theme">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+        <button class="btn btn-icon-only"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>
+        
+        <div class="sidebar-user-avatar" style="width: 28px; height: 28px; font-size: 11px; cursor: pointer" (click)="setTab('profile')">N</div>
+      </div>
+    </header>
+
+    <!-- WORKSPACE TABS -->
+    <div style="flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column;">
+      
+      <!-- TAB 1: DASHBOARD (Unified 3-Pane Document Workspace) -->
+      <div *ngIf="currentTab === 'dashboard'" class="workspace-pane-split" style="display: flex; flex: 1;">
+        
+        <!-- Left Pane: Documents Selector -->
+        <aside class="doc-sidebar-pane">
+          <div class="doc-sidebar-header">
+            <span style="font-size: 13px; font-weight: 700;">Documents ({{ uploadedPDFs.length }})</span>
+            <button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px;" (click)="handleSimulatedUpload()">
+              + Upload
+            </button>
+          </div>
+          <div class="doc-sidebar-search">
+            <input type="text" class="input-field" style="width: 100%; padding: 6px;" placeholder="Search documents..." [(ngModel)]="searchQuery" />
+          </div>
+          <div class="doc-sidebar-list">
+            <div *ngFor="let pdf of uploadedPDFs" class="doc-sidebar-item" [class.active]="activePdfId() === pdf.id" (click)="activePdfId.set(pdf.id)">
+              <span style="font-size: 12.5px; font-weight: 600;">{{ pdf.fileName }}</span>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                <span class="badge" style="background-color: #e2f0d9; color: #385723; border-color: transparent;">Processed</span>
+                <button class="btn" style="padding: 2px; color: var(--danger)" (click)="handleDeletePDF(pdf.id); $event.stopPropagation()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center Column: Editor Canvas -->
+        <main class="editor-canvas-pane">
+          <div class="editor-canvas-tabs">
+            <button class="editor-canvas-tab-btn active">Synthesis</button>
+            <button class="editor-canvas-tab-btn">Notes</button>
+            <button class="editor-canvas-tab-btn">AI Chat</button>
+            <button class="editor-canvas-tab-btn">Outlines</button>
+          </div>
+
+          <div class="editor-toolbar-ribbon">
+            <select class="project-selector-select" style="width: 110px; padding: 4px;"><option>Heading 2</option></select>
+            <button class="btn btn-icon-only"><strong>B</strong></button>
+            <button class="btn btn-icon-only"><em>I</em></button>
+            <button class="btn btn-icon-only"><u>U</u></button>
+            <span style="width: 1px; height: 16px; background-color: #e2e8f0; margin: 0 4px;"></span>
+            <button class="btn btn-icon-only"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+
+            <button class="btn btn-secondary" style="margin-left: auto; padding: 4px 10px; font-size: 11px;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> Export</button>
+          </div>
+
+          <div class="editor-canvas-body">
+            <div class="editor-canvas-sheet">
+              <input type="text" class="editor-title-input" style="font-size: 22px; border: none; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; font-weight: 700; width: 100%; outline: none;" [ngModel]="activeDocument.title" (ngModelChange)="workspaceService.updateDocumentTitle($event)" />
+              
+              <!-- Purple AI Summary callout display -->
+              <div class="ai-summary-callout">
+                <strong style="font-size: 12.5px; color: #6d28d9; display: flex; align-items: center; gap: 6px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                  AI Summary
+                </strong>
+                <p style="margin: 6px 0 0; font-size: 12px; color: #5b21b6; line-height: 1.5;">
+                  ResNet introduced residual learning which allows training of very deep networks by skipping connections, improving accuracy in medical image tasks.
+                </p>
+              </div>
+
+              <textarea class="editor-textarea" style="min-height: 320px; font-family: Georgia, serif; font-size: 14px; line-height: 1.7; border: none; outline: none; resize: none; width: 100%;" [ngModel]="activeDocument.content" (ngModelChange)="workspaceService.updateDocumentContent($event)"></textarea>
+            </div>
+          </div>
+        </main>
+
+        <!-- Right Column: Citations pane -->
+        <aside class="citations-right-pane">
+          <div class="citations-pane-header">
+            <button class="citations-pane-tab active">Citations ({{ papers.length }})</button>
+            <button class="citations-pane-tab">Extracts (32)</button>
+          </div>
+          <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1;">
+            <div *ngFor="let paper of getFilteredPapers()" class="copilot-result-box" style="padding: 10px; cursor: pointer;" (click)="inspectedPaperId.set(paper.id)">
+              <strong style="font-size: 12px; display: block;">{{ paper.authors.split(',')[0] }} et al.</strong>
+              <span style="font-size: 11px; color: #475569; display: block; margin: 2px 0;">{{ paper.title }}</span>
+              <span style="font-size: 10px; color: #94a3b8;">{{ paper.journal }} &bull; {{ paper.year }}</span>
+            </div>
+            <button class="btn btn-secondary" style="margin-top: auto; padding: 8px;" (click)="openAddPaperModal()">
+              + Add Citation
+            </button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- TAB 2: PROJECTS -->
+      <div *ngIf="currentTab === 'projects'" class="library-workspace-layout">
+        <h2 style="font-size: 20px; font-weight: 800;">Research Projects Workspaces</h2>
+        <div class="library-cards-grid">
+          <div *ngFor="let p of projects" class="library-card-premium" style="cursor: pointer" (click)="workspaceService.activeProjectId.set(p.id)">
+            <h3 style="font-size: 15px; margin: 0;">{{ p.name }}</h3>
+            <p style="font-size: 12px; color: var(--text-secondary); margin: 0;">{{ p.description }}</p>
+            <span style="font-size: 11px; color: var(--warning); font-weight: 600;">Target: {{ p.deadline }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: DOCUMENTS (Review Library) -->
+      <div *ngIf="currentTab === 'documents'" class="library-workspace-layout">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h1 style="font-size: 24px; font-weight: 800; margin: 0;">Review Library</h1>
+            <span style="font-size: 13px; color: var(--text-secondary)">All your saved papers, organized and ready to use.</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" class="input-field" placeholder="Search papers..." [(ngModel)]="searchQuery" />
+            <button class="btn btn-secondary" (click)="openAddPaperModal()">+ Add Paper</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 16px; border-bottom: 1px solid #e2e8f0; marginTop: 24px;">
+          <button class="editor-canvas-tab-btn active">All Papers</button>
+          <button class="editor-canvas-tab-btn">Recently Added</button>
+          <button class="editor-canvas-tab-btn">Favorites</button>
+          <button class="editor-canvas-tab-btn">Trash</button>
+        </div>
+
+        <div class="library-cards-grid">
+          <div *ngFor="let paper of getFilteredPapers()" class="library-card-premium" style="cursor: pointer" (click)="inspectedPaperId.set(paper.id)">
+            <div style="display: flex; justify-content: space-between">
+              <span class="badge" style="background-color: #eff6ff; color: #1d4ed8;">Paper</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <h4 style="font-size: 13.5px; margin: 4px 0 0; line-height: 1.4;">{{ paper.title }}</h4>
+            <span style="font-size: 11px; color: #64748b;">{{ paper.authors }}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 10px; border-top: 1px solid #f1f5f9;">
+              <span style="font-size: 10px; color: #94a3b8;">{{ paper.journal }}</span>
+              <span class="badge">{{ paper.year }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: SYNTHESIS MATRIX -->
+      <div *ngIf="currentTab === 'synthesis'" class="matrix-room-layout">
+        <div>
+          <h2 style="margin: 0; font-size: 18px;">Synthesis Comparison Matrix</h2>
+          <span style="font-size: 12px; color: var(--text-secondary)">Compare parameters systematically across bibliography sources.</span>
+        </div>
+        <div class="matrix-table-wrapper" style="margin-top: 16px;">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Paper / Source</th>
+                <th>Methodology</th>
+                <th>Findings</th>
+                <th>Limitations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let paper of papers">
+                <td style="font-weight: 600;">{{ paper.authors.split(',')[0] }} ({{ paper.year }})</td>
+                <td>Comparative analysis using deep networks.</td>
+                <td>Significant performance gain up to 18%.</td>
+                <td>Requires high computational overhead.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: AI CHAT -->
+      <div *ngIf="currentTab === 'chatbot'" class="chatbot-room-layout" style="background-color: white;">
+        <div class="chatbot-room-chat" style="flex: 1;">
+          <div style="padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/></svg>
+            <div>
+              <strong style="font-size: 13.5px; display: block;">AURA Chat Workspace</strong>
+              <span style="font-size: 11px; color: var(--text-muted)">Conversational AI Reader</span>
+            </div>
+          </div>
+
+          <div class="chat-messages-scroll" style="padding: 32px;">
+            <div *ngFor="let msg of chatbotMessages" class="chat-bubble" [class.chat-bubble-user]="msg.sender === 'user'" [class.chat-bubble-bot]="msg.sender === 'bot'">
+              <span>{{ msg.text }}</span>
+            </div>
+          </div>
+
+          <!-- Suggested Queries -->
+          <div style="padding: 16px 32px; display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Suggested Queries</span>
+            <div style="display: flex; gap: 6px;">
+              <button class="tag-pill" (click)="handleQuickPrompt('Explain U-Net architecture and its applications.')">
+                Explain U-Net architecture...
+              </button>
+              <button class="tag-pill" (click)="handleQuickPrompt('Compare GNN and Transformer models.')">
+                Compare GNN and Transformer...
+              </button>
+            </div>
+          </div>
+
+          <form (submit)="handleSendChat($event)" class="chat-input-row" style="padding: 16px 32px; align-items: center;">
+            <input type="text" class="input-field" style="flex: 1; padding: 10px 14px;" placeholder="Ask anything about your documents..." [(ngModel)]="inputText" name="chatText" />
+            <button type="submit" class="btn btn-primary" style="padding: 10px 14px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 6: CITATIONS MANAGER -->
+      <div *ngIf="currentTab === 'citations'" class="matrix-room-layout">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 style="margin: 0; font-size: 18px;">Citation Manager</h2>
+            <span style="font-size: 12px; color: var(--text-secondary)">Manage and organize all citations in your project.</span>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-secondary">Export BibTeX</button>
+            <button class="btn btn-secondary">Export RIS</button>
+          </div>
+        </div>
+
+        <div class="matrix-table-wrapper" style="margin-top: 16px;">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Citation Key</th>
+                <th>In-Text</th>
+                <th>Source Title</th>
+                <th>Year</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of papers">
+                <td style="font-weight: 600;">[cite:{{ p.id }}]</td>
+                <td>({{ p.authors.split(',')[0] }}, {{ p.year }})</td>
+                <td>{{ p.title }}</td>
+                <td>{{ p.year }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 7: SETTINGS -->
+      <div *ngIf="currentTab === 'settings'" class="library-workspace-layout" style="max-width: 720px;">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Project Settings</h2>
+        <div class="form-card-body">
+          <div class="form-group">
+            <label>Project Name</label>
+            <input type="text" class="input-field" style="width: 100%" [(ngModel)]="projName" />
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea class="input-field" style="width: 100%; min-height: 80px" [(ngModel)]="projDesc"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Default Citation Style</label>
+            <select class="project-selector-select" style="width: 100%">
+              <option value="APA">APA 7th</option>
+              <option value="MLA">MLA 9th</option>
+              <option value="Chicago">Chicago Author-Date</option>
+              <option value="Harvard">Harvard Style</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>AI Model Scaffolding</label>
+            <select class="project-selector-select" style="width: 100%">
+              <option value="GPT-4o">GPT-4o (Default)</option>
+              <option value="Claude-3.5">Claude 3.5 Sonnet</option>
+              <option value="Gemini-Pro">Gemini 1.5 Pro</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary" style="align-self: flex-start" (click)="saveSettings()">
+            Save Changes
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 8: PROFILE -->
+      <div *ngIf="currentTab === 'profile'" class="library-workspace-layout" style="max-width: 720px;">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Profile Settings</h2>
+        <div class="form-card-body">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" class="input-field" style="width: 100%" [(ngModel)]="profName" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="input-field" style="width: 100%" [(ngModel)]="profEmail" />
+          </div>
+          <div class="form-group">
+            <label>Affiliation / Institution</label>
+            <input type="text" class="input-field" style="width: 100%" [(ngModel)]="profAffil" />
+          </div>
+          
+          <button class="btn btn-primary" style="align-self: flex-start" (click)="saveProfile()">
+            Save Profile
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- DETAILED PAPER INSPECTOR DRAWER -->
+<div *ngIf="inspectedPaperId()" class="modal-overlay" style="justify-content: flex-end;" (click)="inspectedPaperId.set(null)">
+  <div class="modal-content" style="max-width: 500px; height: 100%; border-radius: 0; animation: none; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
+      <h3 style="margin: 0; font-size: 16px;">Paper Details</h3>
+      <button class="btn btn-icon-only" style="padding: 2px;" (click)="inspectedPaperId.set(null)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div *ngIf="inspectedPaper()" style="flex: 1; overflow-y: auto;">
+      <h2 style="font-size: 18px; line-height: 1.4;">{{ inspectedPaper()!.title }}</h2>
+      <p style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">{{ inspectedPaper()!.authors }} ({{ inspectedPaper()!.year }})</p>
+      <p style="font-size: 12px; color: var(--text-muted);">Journal: {{ inspectedPaper()!.journal }}</p>
+      
+      <div style="margin-top: 20px;">
+        <h4 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Abstract</h4>
+        <p style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">{{ inspectedPaper()!.abstract }}</p>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <h4 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Notes</h4>
+        <textarea class="input-field" style="width: 100%; min-height: 120px; font-size: 13px; line-height: 1.5;" placeholder="Add personal workspace study notes here..."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PAPER MODAL -->
+<div *ngIf="isAddPaperModalOpen()" class="modal-overlay">
+  <div class="modal-content">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px;">
+      <h3 style="margin: 0; font-size: 15px;">Add New Bibliography Reference</h3>
+      <button class="btn btn-icon-only" style="padding: 2px;" (click)="closeAddPaperModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+      </button>
+    </div>
+
+    <form (submit)="submitNewPaper($event)" style="display: flex; flex-direction: column; gap: 12px;">
+      <div class="form-group">
+        <label>Paper Title</label>
+        <input type="text" class="input-field" [(ngModel)]="newPaperTitle" name="title" placeholder="Enter paper title..." required />
+      </div>
+      <div class="form-group">
+        <label>Authors</label>
+        <input type="text" class="input-field" [(ngModel)]="newPaperAuthors" name="authors" placeholder="e.g. Vaswani, A., et al." />
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Year</label>
+          <input type="number" class="input-field" [(ngModel)]="newPaperYear" name="year" />
+        </div>
+        <div class="form-group" style="flex: 2;">
+          <label>Journal / Venue</label>
+          <input type="text" class="input-field" [(ngModel)]="newPaperJournal" name="journal" placeholder="e.g. NeurIPS" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Abstract / Notes</label>
+        <textarea class="input-field" [(ngModel)]="newPaperAbstract" name="abstract" style="min-height: 80px;" placeholder="Add abstract or notes..."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="padding: 10px; margin-top: 10px;">
+        Save Reference
+      </button>
+    </form>
+  </div>
+</div>
