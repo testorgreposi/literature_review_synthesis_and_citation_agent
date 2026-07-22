@@ -14,10 +14,12 @@ import type { Paper } from './types';
 export class App {
   readonly workspaceService = inject(WorkspaceService);
 
-  // Local Component States
+  // Local Component States (Signal for programmatical reactive state)
   readonly activePdfId = signal<string | null>(null);
-  readonly searchQuery = signal('');
-  readonly inputText = signal('');
+  
+  // Local Mutable Properties for [(ngModel)] Form Bindings
+  searchQuery = '';
+  inputText = '';
   
   // Modals & Drawers
   readonly isAddPaperModalOpen = signal(false);
@@ -28,27 +30,33 @@ export class App {
   });
 
   // Settings Forms
-  readonly projName = signal('');
-  readonly projDesc = signal('');
-  readonly activeModel = signal('GPT-4o');
+  projName = '';
+  projDesc = '';
+  activeModel = 'GPT-4o';
 
   // Profile Forms
-  readonly profName = signal('Nasheer');
-  readonly profEmail = signal('nasheer@example.com');
-  readonly profAffil = signal('Codewit Institute of Engineering & Technology');
+  profName = 'Nasheer';
+  profEmail = 'nasheer@example.com';
+  profAffil = 'Codewit Institute of Engineering & Technology';
 
   // New Paper Form
-  readonly newPaperTitle = signal('');
-  readonly newPaperAuthors = signal('');
-  readonly newPaperYear = signal(2026);
-  readonly newPaperJournal = signal('');
-  readonly newPaperAbstract = signal('');
+  newPaperTitle = '';
+  newPaperAuthors = '';
+  newPaperYear = 2026;
+  newPaperJournal = '';
+  newPaperAbstract = '';
+
+  // Auth Forms
+  authEmail = '';
+  authPassword = '';
+  authName = '';
+  isSignUpMode = false;
 
   constructor() {
     // Initialize form states from service when loaded
     const activeProj = this.workspaceService.activeProject();
-    this.projName.set(activeProj.name);
-    this.projDesc.set(activeProj.description);
+    this.projName = activeProj.name;
+    this.projDesc = activeProj.description;
     
     // Set default active PDF if any exists
     const pdfs = this.workspaceService.uploadedPDFs();
@@ -92,10 +100,10 @@ export class App {
 
   handleSendChat(e?: Event) {
     if (e) e.preventDefault();
-    const text = this.inputText().trim();
+    const text = this.inputText.trim();
     if (!text) return;
     this.workspaceService.sendChatbotMessage(text, this.activePdfId());
-    this.inputText.set('');
+    this.inputText = '';
   }
 
   handleQuickPrompt(promptText: string) {
@@ -103,7 +111,7 @@ export class App {
   }
 
   getFilteredPapers() {
-    const query = this.searchQuery().toLowerCase();
+    const query = this.searchQuery.toLowerCase();
     const list = this.papers;
     if (!query) return list;
     return list.filter((p: Paper) => 
@@ -114,16 +122,16 @@ export class App {
 
   saveSettings() {
     const activeProj = this.workspaceService.activeProject();
-    activeProj.name = this.projName();
-    activeProj.description = this.projDesc();
+    activeProj.name = this.projName;
+    activeProj.description = this.projDesc;
     alert('Settings saved successfully!');
   }
 
   saveProfile() {
     this.workspaceService.userProfile.update(prev => ({
       ...prev,
-      name: this.profName(),
-      institution: this.profAffil()
+      name: this.profName,
+      institution: this.profAffil
     }));
     alert('Profile updated successfully!');
   }
@@ -143,40 +151,34 @@ export class App {
 
   submitNewPaper(e: Event) {
     e.preventDefault();
-    if (!this.newPaperTitle().trim()) return;
+    if (!this.newPaperTitle.trim()) return;
 
     this.workspaceService.addPaper({
-      title: this.newPaperTitle().trim(),
-      authors: this.newPaperAuthors().trim() || 'Unknown Authors',
-      year: this.newPaperYear(),
-      journal: this.newPaperJournal().trim() || 'Conference/Journal',
+      title: this.newPaperTitle.trim(),
+      authors: this.newPaperAuthors.trim() || 'Unknown Authors',
+      year: this.newPaperYear,
+      journal: this.newPaperJournal.trim() || 'Conference/Journal',
       tags: ['Manual Add'],
-      abstract: this.newPaperAbstract().trim() || 'No abstract available.',
+      abstract: this.newPaperAbstract.trim() || 'No abstract available.',
       notes: '',
       citations: []
     });
 
     // Reset Form
-    this.newPaperTitle.set('');
-    this.newPaperAuthors.set('');
-    this.newPaperYear.set(2026);
-    this.newPaperJournal.set('');
-    this.newPaperAbstract.set('');
+    this.newPaperTitle = '';
+    this.newPaperAuthors = '';
+    this.newPaperYear = 2026;
+    this.newPaperJournal = '';
+    this.newPaperAbstract = '';
     this.closeAddPaperModal();
   }
 
-  // Simple Auth stubs
-  authEmail = signal('');
-  authPassword = signal('');
-  authName = signal('');
-  isSignUpMode = signal(false);
-
   handleAuthSubmit(e: Event) {
     e.preventDefault();
-    if (this.isSignUpMode()) {
-      this.workspaceService.signUp(this.authEmail(), this.authPassword(), this.authName() || 'User');
+    if (this.isSignUpMode) {
+      this.workspaceService.signUp(this.authEmail, this.authPassword, this.authName || 'User');
     } else {
-      this.workspaceService.signIn(this.authEmail(), this.authPassword());
+      this.workspaceService.signIn(this.authEmail, this.authPassword);
     }
   }
 }
