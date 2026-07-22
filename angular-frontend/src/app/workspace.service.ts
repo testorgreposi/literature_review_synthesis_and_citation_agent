@@ -531,6 +531,34 @@ export class WorkspaceService {
     ]);
   }
 
+  async updatePaperNotes(paperId: string, notes: string) {
+    try {
+      const res = await fetch(`${this.API_URL}/papers/notes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paperId, notes })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        this.projects.set(data.projects);
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    // Offline fallback
+    this.projects.update(list => list.map(p => {
+      if (p.id === this.activeProjectId()) {
+        return {
+          ...p,
+          papers: p.papers.map(paper => paper.id === paperId ? { ...paper, notes } : paper)
+        };
+      }
+      return p;
+    }));
+  }
+
   async sendChatbotMessage(text: string, activePdfId: string | null) {
     const userMsg: ChatMessage = {
       id: `msg-${Date.now()}`,

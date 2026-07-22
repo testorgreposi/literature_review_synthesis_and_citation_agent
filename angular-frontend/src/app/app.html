@@ -220,7 +220,7 @@
             <button class="citations-pane-tab">Extracts (32)</button>
           </div>
           <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1;">
-            <div *ngFor="let paper of getFilteredPapers()" class="copilot-result-box" style="padding: 10px; cursor: pointer;" (click)="inspectedPaperId.set(paper.id)">
+            <div *ngFor="let paper of getFilteredPapers()" class="copilot-result-box" style="padding: 10px; cursor: pointer;" (click)="inspectPaper(paper.id)">
               <strong style="font-size: 12px; display: block;">{{ paper.authors.split(',')[0] }} et al.</strong>
               <span style="font-size: 11px; color: #475569; display: block; margin: 2px 0;">{{ paper.title }}</span>
               <span style="font-size: 10px; color: #94a3b8;">{{ paper.journal }} &bull; {{ paper.year }}</span>
@@ -258,17 +258,17 @@
         </div>
 
         <div style="display: flex; gap: 16px; border-bottom: 1px solid #e2e8f0; marginTop: 24px;">
-          <button class="editor-canvas-tab-btn active">All Papers</button>
-          <button class="editor-canvas-tab-btn">Recently Added</button>
-          <button class="editor-canvas-tab-btn">Favorites</button>
-          <button class="editor-canvas-tab-btn">Trash</button>
+          <button class="editor-canvas-tab-btn" [class.active]="activeLibraryFilter === 'all'" (click)="activeLibraryFilter = 'all'">All Papers</button>
+          <button class="editor-canvas-tab-btn" [class.active]="activeLibraryFilter === 'recent'" (click)="activeLibraryFilter = 'recent'">Recently Added</button>
+          <button class="editor-canvas-tab-btn" [class.active]="activeLibraryFilter === 'favorites'" (click)="activeLibraryFilter = 'favorites'">Favorites</button>
+          <button class="editor-canvas-tab-btn" [class.active]="activeLibraryFilter === 'trash'" (click)="activeLibraryFilter = 'trash'">Trash</button>
         </div>
 
         <div class="library-cards-grid">
-          <div *ngFor="let paper of getFilteredPapers()" class="library-card-premium" style="cursor: pointer" (click)="inspectedPaperId.set(paper.id)">
+          <div *ngFor="let paper of getFilteredPapers()" class="library-card-premium" style="cursor: pointer" (click)="inspectPaper(paper.id)">
             <div style="display: flex; justify-content: space-between">
               <span class="badge" style="background-color: #eff6ff; color: #1d4ed8;">Paper</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" [attr.fill]="isFavorite(paper.id) ? '#f59e0b' : 'none'" [attr.stroke]="isFavorite(paper.id) ? '#f59e0b' : '#94a3b8'" (click)="toggleFavorite(paper.id, $event)" style="cursor: pointer;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </div>
             <h4 style="font-size: 13.5px; margin: 4px 0 0; line-height: 1.4;">{{ paper.title }}</h4>
             <span style="font-size: 11px; color: #64748b;">{{ paper.authors }}</span>
@@ -386,61 +386,155 @@
       <div *ngIf="currentTab === 'settings'" class="library-workspace-layout" style="display: flex; gap: 32px;">
         <!-- Settings Left Sidebar -->
         <aside style="width: 200px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;">
-          <button class="sidebar-nav-btn active" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px;">General</button>
-          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">Collaborators</button>
-          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">AI Preferences</button>
-          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">Export Settings</button>
-          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--text-secondary);">Citation Style</button>
-          <button class="sidebar-nav-btn" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--danger);">Delete Project</button>
+          <button class="sidebar-nav-btn" [class.active]="activeSettingsSubTab === 'general'" (click)="activeSettingsSubTab = 'general'" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px;">General</button>
+          <button class="sidebar-nav-btn" [class.active]="activeSettingsSubTab === 'collaborators'" (click)="activeSettingsSubTab = 'collaborators'" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px;">Collaborators</button>
+          <button class="sidebar-nav-btn" [class.active]="activeSettingsSubTab === 'ai'" (click)="activeSettingsSubTab = 'ai'" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px;">AI Preferences</button>
+          <button class="sidebar-nav-btn" [class.active]="activeSettingsSubTab === 'export'" (click)="activeSettingsSubTab = 'export'" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px;">Export Settings</button>
+          <button class="sidebar-nav-btn" [class.active]="activeSettingsSubTab === 'citation'" (click)="activeSettingsSubTab = 'citation'" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px;">Citation Style</button>
+          <button class="sidebar-nav-btn" [class.active]="activeSettingsSubTab === 'delete'" (click)="activeSettingsSubTab = 'delete'" style="text-align: left; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--danger);">Delete Project</button>
         </aside>
 
         <!-- Settings Form Area -->
         <div style="flex: 1; max-width: 600px;">
-          <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Project Settings</h2>
-          <div class="form-card-body">
-            <div class="form-group">
-              <label>Project Name</label>
-              <input type="text" class="input-field" style="width: 100%" [(ngModel)]="projName" />
-            </div>
-            <div class="form-group">
-              <label>Description</label>
-              <textarea class="input-field" style="width: 100%; min-height: 80px" [(ngModel)]="projDesc"></textarea>
-            </div>
-            <div style="display: flex; gap: 16px;">
-              <div class="form-group" style="flex: 1;">
-                <label>Default Citation Style</label>
-                <select class="project-selector-select" style="width: 100%">
-                  <option value="APA">APA 7th</option>
-                  <option value="MLA">MLA 9th</option>
-                  <option value="Chicago">Chicago Author-Date</option>
-                  <option value="Harvard">Harvard Style</option>
-                </select>
+          <!-- GENERAL -->
+          <div *ngIf="activeSettingsSubTab === 'general'">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">General Project Settings</h2>
+            <div class="form-card-body">
+              <div class="form-group">
+                <label>Project Name</label>
+                <input type="text" class="input-field" style="width: 100%" [(ngModel)]="projName" />
               </div>
-              <div class="form-group" style="flex: 1;">
-                <label>Language</label>
-                <select class="project-selector-select" style="width: 100%">
-                  <option>English</option>
-                  <option>Spanish</option>
-                  <option>German</option>
-                </select>
+              <div class="form-group">
+                <label>Description</label>
+                <textarea class="input-field" style="width: 100%; min-height: 80px" [(ngModel)]="projDesc"></textarea>
               </div>
+              <div style="display: flex; gap: 16px;">
+                <div class="form-group" style="flex: 1;">
+                  <label>Default Citation Style</label>
+                  <select class="project-selector-select" style="width: 100%">
+                    <option value="APA">APA 7th</option>
+                    <option value="MLA">MLA 9th</option>
+                    <option value="Chicago">Chicago Author-Date</option>
+                    <option value="Harvard">Harvard Style</option>
+                  </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                  <label>Language</label>
+                  <select class="project-selector-select" style="width: 100%">
+                    <option>English</option>
+                    <option>Spanish</option>
+                    <option>German</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="align-self: flex-start" (click)="saveSettings()">
+                Save Changes
+              </button>
             </div>
-            <div class="form-group">
-              <label>AI Model Scaffolding</label>
-              <select class="project-selector-select" style="width: 100%">
-                <option value="GPT-4o">GPT-4o (Default)</option>
-                <option value="Claude-3.5">Claude 3.5 Sonnet</option>
-                <option value="Gemini-Pro">Gemini 1.5 Pro</option>
-              </select>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
-              <input type="checkbox" id="citeCheck" checked style="width: 16px; height: 16px;" />
-              <label for="citeCheck" style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">Include document citations in AI responses</label>
-            </div>
+          </div>
 
-            <button class="btn btn-primary" style="align-self: flex-start" (click)="saveSettings()">
-              Save Changes
-            </button>
+          <!-- COLLABORATORS -->
+          <div *ngIf="activeSettingsSubTab === 'collaborators'">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Project Collaborators</h2>
+            <div class="form-card-body" style="gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-tertiary); border-radius: 6px;">
+                  <div>
+                    <strong style="font-size: 13px; display: block;">Nasheer (You)</strong>
+                    <span style="font-size: 11px; color: var(--text-muted);">Owner &bull; nasheer@example.com</span>
+                  </div>
+                  <span class="badge" style="background: #dcfce7; color: #15803d; border: none;">Owner</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--bg-tertiary); border-radius: 6px;">
+                  <div>
+                    <strong style="font-size: 13px; display: block;">Dr. Robert Chen</strong>
+                    <span style="font-size: 11px; color: var(--text-muted);">Collaborator &bull; r.chen@university.edu</span>
+                  </div>
+                  <span class="badge" style="background: #e0f2fe; color: #0369a1; border: none;">Editor</span>
+                </div>
+              </div>
+              <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 8px 0;" />
+              <div class="form-group">
+                <label>Add New Collaborator</label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="email" class="input-field" placeholder="Enter email address..." style="flex: 1;" />
+                  <button class="btn btn-primary" (click)="saveSettings()">Send Invite</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI PREFERENCES -->
+          <div *ngIf="activeSettingsSubTab === 'ai'">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">AI Engine Preferences</h2>
+            <div class="form-card-body">
+              <div class="form-group">
+                <label>Model Architecture</label>
+                <select class="project-selector-select" style="width: 100%" [(ngModel)]="activeModel">
+                  <option value="GPT-4o">GPT-4o (Default)</option>
+                  <option value="Claude-3.5">Claude 3.5 Sonnet</option>
+                  <option value="Gemini-Pro">Gemini 1.5 Pro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>System Instructions Scaffolding</label>
+                <textarea class="input-field" style="width: 100%; min-height: 100px; font-size: 13px;" placeholder="Customize how the AI chatbot should analyze papers..."></textarea>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                <input type="checkbox" id="citeCheck" checked style="width: 16px; height: 16px;" />
+                <label for="citeCheck" style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">Include document citations in AI responses</label>
+              </div>
+              <button class="btn btn-primary" style="align-self: flex-start" (click)="saveSettings()">
+                Save Preferences
+              </button>
+            </div>
+          </div>
+
+          <!-- EXPORT -->
+          <div *ngIf="activeSettingsSubTab === 'export'">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Export Project Data</h2>
+            <div class="form-card-body" style="gap: 16px;">
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Select your preferred output format to download your synthesis draft, notes, and bibliography database.</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div style="border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; cursor: pointer; text-align: center;" (click)="saveSettings()">
+                  <strong style="font-size: 14px; display: block; margin-bottom: 4px;">Markdown (.md)</strong>
+                  <span style="font-size: 11px; color: var(--text-muted);">Synthesis draft and outline references.</span>
+                </div>
+                <div style="border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; cursor: pointer; text-align: center;" (click)="saveSettings()">
+                  <strong style="font-size: 14px; display: block; margin-bottom: 4px;">BibTeX Database (.bib)</strong>
+                  <span style="font-size: 11px; color: var(--text-muted);">Complete BibTeX bibliography library.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CITATION -->
+          <div *ngIf="activeSettingsSubTab === 'citation'">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Default Bibliography Citation Style</h2>
+            <div class="form-card-body" style="gap: 12px;">
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer;">
+                <input type="radio" name="citationStyle" checked /> APA 7th Edition (American Psychological Association)
+              </label>
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer;">
+                <input type="radio" name="citationStyle" /> MLA 9th Edition (Modern Language Association)
+              </label>
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer;">
+                <input type="radio" name="citationStyle" /> IEEE Style Guidelines
+              </label>
+              <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer;">
+                <input type="radio" name="citationStyle" /> Chicago Manual of Style (Author-Date)
+              </label>
+              <button class="btn btn-primary" style="align-self: flex-start; margin-top: 12px;" (click)="saveSettings()">Save Style</button>
+            </div>
+          </div>
+
+          <!-- DELETE -->
+          <div *ngIf="activeSettingsSubTab === 'delete'">
+            <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--danger);">Danger Zone - Delete Project</h2>
+            <div class="form-card-body" style="border-color: var(--danger); background: #fef2f2; color: #991b1b; gap: 16px;">
+              <p style="font-size: 13px; line-height: 1.5; margin: 0;">Once you delete a project, all associated bibliography files, uploaded PDF chapters, structural outlines, synthesis matrices, and drafts are permanently deleted. This action cannot be undone.</p>
+              <button class="btn" style="background-color: var(--danger); color: white; border: none; align-self: flex-start;" (click)="saveSettings()">Delete This Project</button>
+            </div>
           </div>
         </div>
       </div>
@@ -557,28 +651,29 @@
 </div>
 
 <!-- DETAILED PAPER INSPECTOR DRAWER -->
-<div *ngIf="inspectedPaperId()" class="modal-overlay" style="justify-content: flex-end;" (click)="inspectedPaperId.set(null)">
+<div *ngIf="inspectedPaperId()" class="modal-overlay" style="justify-content: flex-end;" (click)="inspectPaper(null)">
   <div class="modal-content" style="max-width: 500px; height: 100%; border-radius: 0; animation: none; display: flex; flex-direction: column;" (click)="$event.stopPropagation()">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
       <h3 style="margin: 0; font-size: 16px;">Paper Details</h3>
-      <button class="btn btn-icon-only" style="padding: 2px;" (click)="inspectedPaperId.set(null)">
+      <button class="btn btn-icon-only" style="padding: 2px;" (click)="inspectPaper(null)">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
       </button>
     </div>
 
-    <div *ngIf="inspectedPaper()" style="flex: 1; overflow-y: auto;">
-      <h2 style="font-size: 18px; line-height: 1.4;">{{ inspectedPaper()!.title }}</h2>
-      <p style="font-size: 13px; font-weight: 600; color: var(--text-secondary);">{{ inspectedPaper()!.authors }} ({{ inspectedPaper()!.year }})</p>
-      <p style="font-size: 12px; color: var(--text-muted);">Journal: {{ inspectedPaper()!.journal }}</p>
+    <div *ngIf="inspectedPaper()" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+      <h2 style="font-size: 18px; line-height: 1.4; margin: 0;">{{ inspectedPaper()!.title }}</h2>
+      <p style="font-size: 13px; font-weight: 600; color: var(--text-secondary); margin: 0;">{{ inspectedPaper()!.authors }} ({{ inspectedPaper()!.year }})</p>
+      <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Journal: {{ inspectedPaper()!.journal }}</p>
       
-      <div style="margin-top: 20px;">
+      <div style="margin-top: 10px;">
         <h4 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Abstract</h4>
-        <p style="font-size: 13px; line-height: 1.6; color: var(--text-secondary);">{{ inspectedPaper()!.abstract }}</p>
+        <p style="font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin: 0;">{{ inspectedPaper()!.abstract }}</p>
       </div>
 
-      <div style="margin-top: 20px;">
-        <h4 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;">Notes</h4>
-        <textarea class="input-field" style="width: 100%; min-height: 120px; font-size: 13px; line-height: 1.5;" placeholder="Add personal workspace study notes here..."></textarea>
+      <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px; flex: 1;">
+        <h4 style="font-size: 13px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px;">Study Notes</h4>
+        <textarea class="input-field" style="width: 100%; flex: 1; min-height: 120px; font-size: 13px; line-height: 1.5;" placeholder="Add personal workspace study notes here..." [(ngModel)]="inspectedPaperNotes" name="paperNotes"></textarea>
+        <button class="btn btn-primary" style="margin-top: 8px; align-self: flex-start;" (click)="savePaperNotes()">Save Notes</button>
       </div>
     </div>
   </div>

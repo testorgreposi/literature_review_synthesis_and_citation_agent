@@ -21,6 +21,14 @@ export class App {
   searchQuery = '';
   inputText = '';
   
+  // Dashboard & Navigation Sub-Tabs
+  activeEditorTab: 'synthesis' | 'notes' | 'chatbot' | 'outlines' = 'synthesis';
+  activeLibraryFilter: 'all' | 'recent' | 'favorites' | 'trash' = 'all';
+  activeSettingsSubTab: 'general' | 'collaborators' | 'ai' | 'export' | 'citation' | 'delete' = 'general';
+
+  // Favorites tracking
+  favoritePaperIds = signal<Set<string>>(new Set());
+
   // Modals & Drawers
   readonly isAddPaperModalOpen = signal(false);
   readonly inspectedPaperId = signal<string | null>(null);
@@ -28,6 +36,7 @@ export class App {
     const papers = this.workspaceService.papers();
     return papers.find(p => p.id === this.inspectedPaperId());
   });
+  inspectedPaperNotes = '';
 
   // Settings Forms
   projName = '';
@@ -112,12 +121,63 @@ export class App {
 
   getFilteredPapers() {
     const query = this.searchQuery.toLowerCase();
-    const list = this.papers;
+    let list = this.papers;
+
+    // Filter by Active Library Filter Tab
+    if (this.activeLibraryFilter === 'recent') {
+      list = list.filter((p: Paper) => p.year >= 2017);
+    } else if (this.activeLibraryFilter === 'favorites') {
+      list = list.filter((p: Paper) => this.isFavorite(p.id));
+    } else if (this.activeLibraryFilter === 'trash') {
+      // Return empty or select subset for demo
+      list = [];
+    }
+
     if (!query) return list;
     return list.filter((p: Paper) => 
       p.title.toLowerCase().includes(query) || 
       p.authors.toLowerCase().includes(query)
     );
+  }
+
+  toggleFavorite(id: string, event?: Event) {
+    if (event) event.stopPropagation();
+    this.favoritePaperIds.update(set => {
+      const newSet = new Set(set);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }
+
+  isFavorite(id: string): boolean {
+    return this.favoritePaperIds().has(id);
+  }
+
+  inspectPaper(id: string | null) {
+    this.inspectedPaperId.set(id);
+    if (id) {
+      const paper = this.papers.find(p => p.id === id);
+      this.inspectedPaperNotes = paper ? paper.notes : '';
+    } else {
+      this.inspectedPaperNotes = '';
+    }
+  }
+
+  savePaperNotes() {
+    const id = this.inspectedPaperId();
+    if (id) {
+      this.workspaceService.updatePaperNotes(id, this.inspectedPaperNotes);
+      // Update local paper notes immediately
+      const paper = this.papers.find(p => p.id === id);
+      if (paper) {
+        paper.notes = this.inspectedPaperNotes;
+      }
+      alert('Paper notes saved successfully!');
+    }
   }
 
   saveSettings() {

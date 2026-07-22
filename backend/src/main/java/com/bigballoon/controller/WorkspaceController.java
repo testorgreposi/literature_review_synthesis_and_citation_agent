@@ -258,6 +258,26 @@ public class WorkspaceController {
         }
     }
 
+    @PostMapping("/api/papers/notes")
+    public String updatePaperNotes(@RequestBody Map<String, String> request) {
+        String paperId = request.getOrDefault("paperId", "");
+        String notes = request.getOrDefault("notes", "");
+        
+        int paperIdx = databaseJson.indexOf("\"id\": \"" + paperId + "\"");
+        if (paperIdx != -1) {
+            int notesIdx = databaseJson.indexOf("\"notes\":", paperIdx);
+            if (notesIdx != -1) {
+                int startQuote = databaseJson.indexOf("\"", notesIdx + 7);
+                int endQuote = databaseJson.indexOf("\"", startQuote + 1);
+                
+                String replacementNotes = "\"" + notes.replace("\n", "\\n").replace("\"", "\\\"") + "\"";
+                databaseJson = databaseJson.substring(0, startQuote) + replacementNotes + databaseJson.substring(endQuote + 1);
+                saveDatabase();
+            }
+        }
+        return databaseJson;
+    }
+
     private void loadDatabase() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
