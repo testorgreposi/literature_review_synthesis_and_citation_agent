@@ -1,0 +1,392 @@
+/* ========================================================
+   LitReview AI - Premium Zotero/Adobe Workspace Theme
+   ======================================================== */
+
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: #f8fafc; /* Premium clean slate background */
+  color: #0f172a;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+/* 1. Deep Indigo Left Sidebar (Matches Image) */
+.sidebar-litreview {
+  width: 250px;
+  background-color: #0b0f19; /* Dark Indigo-black */
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px 16px;
+  flex-shrink: 0;
+  color: #f8fafc;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding-left: 8px;
+}
+
+.sidebar-brand-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.sidebar-brand-title {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+}
+
+.sidebar-brand-title span {
+  display: block;
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.sidebar-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 13.5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.sidebar-nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.sidebar-nav-btn.active {
+  background-color: #2563eb;
+  color: white;
+}
+
+/* Storage Used Progress Panel */
+.sidebar-storage-card {
+  background-color: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: auto;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.sidebar-storage-bar {
+  height: 6px;
+  background-color: #1f2937;
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.sidebar-storage-fill {
+  width: 24%;
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+}
+
+/* User Card Bottom Sidebar */
+.sidebar-user-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* 2. Top Header Navigation (Breadcrumb style) */
+.header-litreview {
+  height: 60px;
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  flex-shrink: 0;
+}
+
+.header-project-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-project-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.header-search-wrapper {
+  position: relative;
+  width: 320px;
+}
+
+.header-search-input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  font-size: 13px;
+  outline: none;
+}
+
+/* 3. Main Workspace Tab Panels */
+.workspace-pane-split {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+/* Documents Sidebar Panel (Left) */
+.doc-sidebar-pane {
+  width: 260px;
+  background-color: white;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.doc-sidebar-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.doc-sidebar-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.doc-sidebar-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.doc-sidebar-item {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.doc-sidebar-item:hover {
+  border-color: #cbd5e1;
+  background-color: #f1f5f9;
+}
+
+.doc-sidebar-item.active {
+  border-color: #2563eb;
+  background-color: rgba(37, 99, 235, 0.03);
+}
+
+/* Center Rich Text Editor Canvas */
+.editor-canvas-pane {
+  flex: 1;
+  background-color: #f1f5f9; /* Slate grey backing */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.editor-canvas-tabs {
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  padding: 0 24px;
+  gap: 8px;
+}
+
+.editor-canvas-tab-btn {
+  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.editor-canvas-tab-btn.active {
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+}
+
+.editor-canvas-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.editor-canvas-sheet {
+  width: 100%;
+  max-width: 780px;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 48px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-toolbar-ribbon {
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  gap: 6px;
+  padding: 8px 24px;
+  align-items: center;
+}
+
+/* AI Summary Block inside Editor */
+.ai-summary-callout {
+  background-color: #f5f3ff;
+  border-left: 4px solid #8b5cf6;
+  border-radius: 6px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+/* Citations & Extracts Right panel */
+.citations-right-pane {
+  width: 320px;
+  background-color: white;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.citations-pane-header {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 16px;
+}
+
+.citations-pane-tab {
+  flex: 1;
+  padding: 14px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.citations-pane-tab.active {
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+}
+
+/* 4. Review Library Grid Layout */
+.library-workspace-layout {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px;
+}
+
+.library-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.library-card-premium {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--transition-normal);
+}
+
+.library-card-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  border-color: #cbd5e1;
+}
+
+/* Simple forms styling */
+.form-card-body {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
