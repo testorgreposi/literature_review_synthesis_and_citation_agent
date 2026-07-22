@@ -153,8 +153,9 @@
         <aside class="doc-sidebar-pane">
           <div class="doc-sidebar-header">
             <span style="font-size: 13px; font-weight: 700;">Documents ({{ uploadedPDFs.length }})</span>
-            <button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px;" (click)="handleSimulatedUpload()">
-              + Upload
+            <input type="file" accept=".pdf" #fileInput (change)="onFileSelected($event)" style="display: none;" />
+            <button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px;" (click)="fileInput.click()" [disabled]="isUploading">
+              {{ isUploading ? 'Uploading...' : '+ Upload' }}
             </button>
           </div>
           <div class="doc-sidebar-search">

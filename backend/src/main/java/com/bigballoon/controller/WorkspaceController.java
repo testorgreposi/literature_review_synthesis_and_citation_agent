@@ -127,11 +127,26 @@ public class WorkspaceController {
     }
 
     @PostMapping("/api/pdf/upload")
-    public String uploadPDF(@RequestBody Map<String, Object> request) {
-        String fileName = (String) request.getOrDefault("fileName", "scanned.pdf");
-        String fileSize = (String) request.getOrDefault("fileSize", "1.8 MB");
-        int pages = (Integer) request.getOrDefault("pages", 10);
-        String activeProjId = (String) request.getOrDefault("activeProjectId", "proj-1");
+    public String uploadPDF(@RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+                            @RequestParam("activeProjectId") String activeProjId) {
+        String fileName = file.getOriginalFilename();
+        if (fileName == null) fileName = "uploaded.pdf";
+        
+        long sizeBytes = file.getSize();
+        String fileSize = String.format("%.2f MB", (double) sizeBytes / (1024 * 1024));
+        int pages = 12; // Simulated extracted page count from PDF structure
+        
+        try {
+            File dir = new File("uploads");
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File dest = new File(dir, System.currentTimeMillis() + "_" + fileName);
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String pdfId = "pdf-" + System.currentTimeMillis();
 
         int projIdx = databaseJson.indexOf("\"id\": \"" + activeProjId + "\"");

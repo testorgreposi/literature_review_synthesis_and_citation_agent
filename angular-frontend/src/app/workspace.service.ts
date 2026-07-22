@@ -90,161 +90,17 @@ export class WorkspaceService {
 
   private fallbackProject(): ResearchProject {
     return {
-      id: 'proj-default',
-      name: 'Deep Learning in Medical Imaging',
-      description: 'A comprehensive literature review on deep learning techniques.',
-      deadline: '2026-09-01',
-      papers: [
-        {
-          id: '1',
-          title: 'Attention is All You Need',
-          authors: 'Vaswani, A., Shazeer, N., Parmar, N., et al.',
-          year: 2017,
-          journal: 'Advances in Neural Information Processing Systems',
-          tags: ['Transformer', 'Deep Learning'],
-          abstract: 'The dominant sequence transduction models are based on complex recurrent or convolutional neural networks...',
-          notes: '',
-          citations: []
-        },
-        {
-          id: '2',
-          title: 'Deep Residual Learning for Image Recognition',
-          authors: 'He, K., Zhang, X., Ren, S., & Sun, J.',
-          year: 2016,
-          journal: 'IEEE Conference on Computer Vision and Pattern Recognition',
-          tags: ['CNN', 'Residual Learning'],
-          abstract: 'Deeper neural networks are more difficult to train. We present a residual learning framework to ease the training of networks...',
-          notes: '',
-          citations: []
-        },
-        {
-          id: '3',
-          title: 'U-Net: Convolutional Networks for Biomedical Image Segmentation',
-          authors: 'Ronneberger, O., Fischer, P., & Brox, T.',
-          year: 2015,
-          journal: 'Medical Image Computing and Computer-Assisted Intervention',
-          tags: ['Segmentation', 'Deep Learning'],
-          abstract: 'There is large consent that successful training of deep networks requires many thousand annotated training images...',
-          notes: '',
-          citations: []
-        },
-        {
-          id: '4',
-          title: 'A Survey on Deep Learning',
-          authors: 'Goodfellow, I., Bengio, Y., & Courville, A.',
-          year: 2016,
-          journal: 'Deep Learning Book',
-          tags: ['Survey', 'Deep Learning'],
-          abstract: 'This survey provides an overview of deep learning methodologies and neural network configurations...',
-          notes: '',
-          citations: []
-        },
-        {
-          id: '5',
-          title: 'Medical Image Analysis with CNNs',
-          authors: 'Litjens, G., Kooi, T., Bejnordi, B. E., et al.',
-          year: 2017,
-          journal: 'Medical Image Analysis Journal',
-          tags: ['CNN', 'Medical Imaging'],
-          abstract: 'A comprehensive review of the application of convolutional neural networks to medical image analysis...',
-          notes: '',
-          citations: []
-        },
-        {
-          id: '6',
-          title: 'Transformers in Healthcare',
-          authors: 'Shickel, B., et al.',
-          year: 2020,
-          journal: 'Journal of Biomedical Informatics',
-          tags: ['Transformer', 'Healthcare'],
-          abstract: 'Evaluating clinical representations and temporal sequence models for healthcare outcomes...',
-          notes: '',
-          citations: []
-        },
-        {
-          id: '7',
-          title: 'Vision Transformer (ViT)',
-          authors: 'Dosovitskiy, A., et al.',
-          year: 2020,
-          journal: 'International Conference on Learning Representations',
-          tags: ['Transformer', 'Computer Vision'],
-          abstract: 'While the Transformer architecture has become the de-facto standard for NLP tasks, its applications to computer vision remain limited...',
-          notes: '',
-          citations: []
-        },
-        {
-          id: '8',
-          title: 'Explainable AI in Medicine',
-          authors: 'Rudin, C.',
-          year: 2019,
-          journal: 'Nature Machine Intelligence',
-          tags: ['XAI', 'Medicine'],
-          abstract: 'Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead...',
-          notes: '',
-          citations: []
-        }
-      ],
-      uploadedPDFs: [
-        {
-          id: 'pdf-1',
-          fileName: 'Attention is All You Need.pdf',
-          fileSize: '2.4 MB',
-          uploadDate: '2026-07-22',
-          pages: 15,
-          summary: 'Introduces the Transformer architecture.',
-          simplifiedText: { eli5: 'Uses attention to learn.', standard: 'Standard Transformer explanation.', detailed: 'Detailed keypoints.' }
-        },
-        {
-          id: 'pdf-2',
-          fileName: 'ResNet: Deep Residual Learning.pdf',
-          fileSize: '1.8 MB',
-          uploadDate: '2026-07-22',
-          pages: 12,
-          summary: 'Introduces residual skip connections.',
-          simplifiedText: { eli5: 'Skips connections to train deeper.', standard: 'Standard ResNet explanation.', detailed: 'Detailed keypoints.' }
-        },
-        {
-          id: 'pdf-3',
-          fileName: 'Medical Image Analysis with CNNs.pdf',
-          fileSize: '3.1 MB',
-          uploadDate: '2026-07-22',
-          pages: 22,
-          summary: 'Review of CNN applications in healthcare.',
-          simplifiedText: { eli5: 'CNNs analyze medical images.', standard: 'Standard CNN medical explanation.', detailed: 'Detailed keypoints.' }
-        },
-        {
-          id: 'pdf-4',
-          fileName: 'U-Net: Convolutional Networks.pdf',
-          fileSize: '1.4 MB',
-          uploadDate: '2026-07-22',
-          pages: 8,
-          summary: 'U-Net architecture for biomedical image segmentation.',
-          simplifiedText: { eli5: 'U-Net segments images.', standard: 'Standard U-Net explanation.', detailed: 'Detailed keypoints.' }
-        },
-        {
-          id: 'pdf-5',
-          fileName: 'A Survey on Deep Learning.pdf',
-          fileSize: '4.2 MB',
-          uploadDate: '2026-07-22',
-          pages: 45,
-          summary: 'Overview of deep learning concepts.',
-          simplifiedText: { eli5: 'Deep learning introduction.', standard: 'Standard DL explanation.', detailed: 'Detailed keypoints.' }
-        },
-        {
-          id: 'pdf-6',
-          fileName: 'Transformers in Healthcare.pdf',
-          fileSize: '2.8 MB',
-          uploadDate: '2026-07-22',
-          pages: 18,
-          summary: 'Healthcare NLP and sequence models.',
-          simplifiedText: { eli5: 'Transformers handle patient sequences.', standard: 'Standard health transformer explanation.', detailed: 'Detailed keypoints.' }
-        }
-      ],
+      id: 'proj-1',
+      name: 'Modern Research Workflows',
+      description: 'Literature review exploring systematic mapping and AI ethics.',
+      deadline: '2026-08-24',
+      papers: [],
+      uploadedPDFs: [],
       activeDocument: {
         id: 'doc-1',
-        title: 'Literature Review: Deep Learning in Medical Imaging',
-        content: 'Deep learning models, particularly Convolutional Neural Networks (CNNs), have revolutionized medical image analysis.',
-        lastSaved: 'Just now'
+        title: 'Literature Review: Modern Research Workflows',
+        content: '# Literature Review\n\nProtocols adaptation standard SLR guidelines.',
+        lastSaved: '12:00 PM'
       },
       themes: [],
       matrixRows: [],
@@ -476,17 +332,20 @@ export class WorkspaceService {
     }));
   }
 
-  async simulatePDFUpload(fileName: string, fileSize: string, pages: number) {
+  async uploadPDFFile(file: File): Promise<boolean> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('activeProjectId', this.activeProjectId());
+
     try {
       const res = await fetch(`${this.API_URL}/pdf/upload`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activeProjectId: this.activeProjectId(), fileName, fileSize, pages })
+        body: formData
       });
       if (res.ok) {
         const data = await res.json();
         this.projects.set(data.projects);
-        return;
+        return true;
       }
     } catch (err) {
       console.error(err);
@@ -495,10 +354,10 @@ export class WorkspaceService {
     // Offline implementation
     const newPDF: UploadedPDF = {
       id: `pdf-${Date.now()}`,
-      fileName,
-      fileSize,
+      fileName: file.name,
+      fileSize: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
       uploadDate: new Date().toISOString().split('T')[0],
-      pages,
+      pages: 12,
       summary: 'Simulated upload summary.',
       simplifiedText: { eli5: 'ELI5 summary', standard: 'Standard summary', detailed: 'Detailed summary' }
     };
@@ -511,6 +370,7 @@ export class WorkspaceService {
       }
       return p;
     }));
+    return true;
   }
 
   deleteUploadedPDF(id: string) {

@@ -88,15 +88,56 @@ export class App {
     this.workspaceService.currentTab.set(tab);
   }
 
-  handleSimulatedUpload() {
-    this.workspaceService.simulatePDFUpload('graph_neural_networks.pdf', '2.4 MB', 12);
-    // Auto-select uploaded PDF
-    setTimeout(() => {
-      const pdfs = this.workspaceService.uploadedPDFs();
-      if (pdfs.length > 0) {
-        this.activePdfId.set(pdfs[pdfs.length - 1].id);
+  isUploading = false;
+
+  async onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+
+    // Validate size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Error: File size exceeds the maximum limit of 10MB.');
+      input.value = '';
+      return;
+    }
+
+    // Validate type
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      alert('Error: Only PDF documents are allowed.');
+      input.value = '';
+      return;
+    }
+
+    // Prevent duplicate filenames
+    const hasDuplicate = this.uploadedPDFs.some(pdf => pdf.fileName === file.name);
+    if (hasDuplicate) {
+      alert('Error: A document with this filename is already uploaded in the project.');
+      input.value = '';
+      return;
+    }
+
+    this.isUploading = true;
+
+    try {
+      const success = await this.workspaceService.uploadPDFFile(file);
+      if (success) {
+        setTimeout(() => {
+          const pdfs = this.workspaceService.uploadedPDFs();
+          if (pdfs.length > 0) {
+            this.activePdfId.set(pdfs[pdfs.length - 1].id);
+          }
+        }, 100);
+      } else {
+        alert('Error: Failed to upload file to the server.');
       }
-    }, 100);
+    } catch (err) {
+      alert('Error: Failed to upload file due to a connection error.');
+    } finally {
+      this.isUploading = false;
+      input.value = '';
+    }
   }
 
   handleDeletePDF(id: string) {
